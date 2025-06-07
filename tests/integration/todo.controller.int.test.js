@@ -5,11 +5,21 @@ const newTodo = require('../mock-data/new-todo.json');
 const endpointUrl = '/todos/';
 let firstTodo;
 let newTodoId;
+let deleteTodoId;
 const testData = { title: "Updated title", done: true };
+
 beforeAll(async () => {
   const response = await request(app).get("/todos");
   firstTodo = response.body[0];
 });
+
+beforeAll(async () => {
+  const response = await request(app)
+    .post("/todos")
+    .send({ title: "Delete test", done: false });
+  deleteTodoId = response.body._id;  
+});
+
 
 describe(endpointUrl, () => {
   it('POST ' + endpointUrl, async () => {
@@ -59,6 +69,11 @@ describe(endpointUrl, () => {
       .put(`/todos/${fakeId}`)
       .send(testData);
 
+    expect(response.statusCode).toBe(404);
+  });
+  it("should return 404 if todo to delete is not found", async () => {
+    const fakeId = "65ae744d7702e654986429f5";
+    const response = await request(app).delete(`/todos/${fakeId}`);
     expect(response.statusCode).toBe(404);
   });
 
