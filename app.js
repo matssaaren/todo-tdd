@@ -10,7 +10,6 @@ app.use(express.json());
 app.use("/todos", todoRoutes);
 
 app.use((error, req, res, next) => {
-    console.error(error);
     res.status(500).json({ message: error.message });
 });
 
